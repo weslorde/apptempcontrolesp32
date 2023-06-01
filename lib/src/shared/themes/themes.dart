@@ -23,8 +23,20 @@ final dartTheme = ThemeData(
         darkColorScheme.primary, //navBar_Bacground = 60% of color #473f66
     labelTextStyle:
         MaterialStatePropertyAll(TextStyle(color: darkColorScheme.primary)),
-    iconTheme: MaterialStatePropertyAll(IconThemeData(color: darkColorScheme.background)),
-    
-
+    iconTheme: MaterialStatePropertyAll(
+        IconThemeData(color: darkColorScheme.background)),
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+        backgroundColor: MaterialStatePropertyAll(darkColorScheme.primary),
+        foregroundColor: const MaterialStatePropertyAll(Colors.black),
+        overlayColor:
+            const MaterialStatePropertyAll(Color.fromARGB(255, 182, 121, 74))),
+  ),
+  iconButtonTheme: IconButtonThemeData(
+    style: ButtonStyle(
+      iconColor: MaterialStatePropertyAll(darkColorScheme.primary),
+      overlayColor: const MaterialStatePropertyAll(Color.fromARGB(255, 182, 121, 74)),
+    ),
   ),
 );

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'pages/page1.dart';
+import 'pages/page2.dart';
+import 'pages/page3.dart';
 import 'src/shared/themes/themes.dart';
 import 'widgets/bottomNavigationBar_Widget.dart';
 
@@ -32,7 +35,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      themeMode: themeMode,
+      themeMode: ThemeMode.dark,//themeMode,
       theme: lightTheme,
       darkTheme: dartTheme,
       home: MyHomePage(changeThemeMode: changeThemeMode),
@@ -62,28 +65,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavBar(currentIndex: selectedIndex, onNavBarClicked: onNavBarClicked),
-      appBar: AppBar(
-        title: const Text('Teste'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '...',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
+      body: const [Page1(),Page2(),Page3()][selectedIndex],
+      /*floatingActionButton: FloatingActionButton(
         onPressed: widget.changeThemeMode,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ),
+      ),*/
     );
   }
 }
