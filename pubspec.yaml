@@ -30,6 +30,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+    
+  location: ^4.4.0
+  flutter_blue_plus: ^1.4.0
   
   step_progress_indicator: ^1.0.1
 

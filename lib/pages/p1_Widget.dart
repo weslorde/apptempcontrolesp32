@@ -30,7 +30,7 @@ class _LineTemperatureProgressState extends State<LineTemperatureProgress> {
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(
-                '${widget.temp}',
+                '${widget.temp}º',
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ],
@@ -61,13 +61,13 @@ class _LineTemperatureProgressState extends State<LineTemperatureProgress> {
                 ]),
             //customColor: ColorCircularProgress,
           ),
-          Transform(
+          /*Transform(
               transform: Matrix4.translationValues(340, 1.5, 0),
               child: const Icon(
                 Icons.circle,
                 color: Colors.white,
                 size: 12,
-              ))
+              ))*/
         ]),
       ],
     );
