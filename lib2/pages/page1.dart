@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
-import 'all_Widget.dart';
 import 'p1_Widget.dart';
 
 class Page1 extends StatefulWidget {
@@ -18,6 +17,15 @@ class Page1 extends StatefulWidget {
 }
 
 class _Page1State extends State<Page1> {
+  Color ColorCircularProgress(int t) {
+    if (currentStep > t) {
+      return (Color.lerp(Colors.amber, Colors.red, t.toDouble() / totalSteps)!);
+    } else {
+      return (Color.lerp(Colors.amber.withAlpha(70), Colors.red.withAlpha(70),
+          t.toDouble() / totalSteps)!);
+    }
+  }
+
   int temp = 300;
   int tempSensor1 = 200;
   int tempSensor2 = 200;
@@ -54,15 +62,6 @@ class _Page1State extends State<Page1> {
     super.dispose();
   }
 
-  Color ColorCircularProgress(int t) {
-    if (currentStep > t) {
-      return (Color.lerp(Colors.amber, Colors.red, t.toDouble() / totalSteps)!);
-    } else {
-      return (Color.lerp(Colors.amber.withAlpha(70), Colors.red.withAlpha(70),
-          t.toDouble() / totalSteps)!);
-    }
-  }
-
   void attCalculaValores() {
     totalSteps = 50;
     stepsToPi = (2 * math.pi - 2 * math.pi / 6) /
@@ -89,7 +88,6 @@ class _Page1State extends State<Page1> {
   void blueCheck() async {
     print("teste");
     var _ListLogic = await status();
-    print(_ListLogic);
     try {
       setState(() {
         BlueState = _ListLogic[0];
@@ -112,26 +110,13 @@ class _Page1State extends State<Page1> {
     });
   }
 
-  void _opentransactionFormModal() {
-    showModalBottomSheet(
-        context: context,
-        builder: (_) {
-          return targetTempForm(onSubmit: onTargetTempFormSubmit);
-        });
-  }
-
-  void onTargetTempFormSubmit(int value){
-    mandaMensagem("Target,$value");
-    Navigator.of(context).pop();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // Menu superior
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {}, //TODO Perfil icon superior esquedo
+          onPressed: ()  { }, //TODO Perfil icon superior esquedo
           icon: const Icon(
             Icons.account_circle_rounded,
             size: 30,
@@ -139,9 +124,7 @@ class _Page1State extends State<Page1> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              TestPrint();
-            }, //TODO Menu icon superior direito
+            onPressed: () {}, //TODO Menu icon superior direito
             icon: const Icon(
               Icons.menu,
               size: 30,
@@ -288,7 +271,38 @@ class _Page1State extends State<Page1> {
                         ),
 
                         //Botoes abaixo Temp e Timer
-                        AlarmCreatButtons(opentransactionFormModal: _opentransactionFormModal)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                child: Text(
+                                  "Temperatura",
+                                  style: TextStyle(
+                                      color: darkColorScheme.background,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                child: Text(
+                                  "Timer",
+                                  style: TextStyle(
+                                      //color: darkColorScheme.background,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ),

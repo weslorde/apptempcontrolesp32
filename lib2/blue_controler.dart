@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:location/location.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 var location = Location();
 bool? blueState;
@@ -14,24 +13,16 @@ String characterMandarUuid = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
 String characterReceberUuid = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
 bool isConectingBlue = false;
 List ListTemp = ["000","000","000","000"];
-List AlarmeGraus = [0,0,0,0,0, 0,0,0,0,0]; //[0,0,0,0,0,0,0,0];
-List AlarmeTimer = [0,0,0,0,0, 0, 0, 0, 0, 0]; //[0,0,0,0,0,0,0,0];
 bool notiflyOk = false;
 
-late void Function(List) attPage2;
 
-void recivePage2Att(void Function(List) fun){
-  attPage2 = fun;
-}
 
 Future<List<bool>> status() async {
-  Permission.location.request();
-  Permission.bluetooth.request();
   return [await FlutterBluePlus.instance.isOn, await location.serviceEnabled()];
 }
 
 bool isConnectBlueDevice() {
-  if (conectedDevice?.name == "ESP32" || conectedDevice?.name == "ChurrasTech") {return true;}
+  if (conectedDevice?.name == "ChurrasTech") {return true;}
   else {return false;}
 }
 
@@ -88,8 +79,8 @@ blueScan(void Function(bool) inConBlueChange) async {
       .startScan(timeout: const Duration(seconds: 3));
   bool findDisp = false;
   for (int i = 0; i < scanResult.length; i++) {   
-    print(scanResult[i].device.name);
-    if (scanResult[i].device.name == "ESP32" || scanResult[i].device.name == "ChurrasTech") {
+    //print(scanResult[i].device.name);
+    if (scanResult[i].device.name == "ChurrasTech") {
       findDisp = true;
       await scanResult[i].device.connect();
       conectedDevice = scanResult[i].device;
@@ -113,7 +104,6 @@ blueScan(void Function(bool) inConBlueChange) async {
               BlueCharacteristicToSend = lsOfChar[y];
               print("foiiiii222222222");
               inConBlueChange(false);
-              //mandaMensagem("Ping");
               //TODO chamar um "Ping" para receber as infos
             }
           }
@@ -151,23 +141,8 @@ blueNotify(msgRecebida) {
   if (comando == "Temp") {
     ListTemp = [listRecived[1], listRecived[2], listRecived[3], listRecived[4]];
   }
-  else if (comando == "AlarmG"){
-    int x = int.parse(listRecived[1]);
-    AlarmeGraus[x] = [listRecived[2], listRecived[3] ];
-    attPage2([AlarmeGraus,AlarmeTimer]);
-  }
-  else if (comando == "AlarmT"){
-    int x = int.parse(listRecived[1]);
-    AlarmeTimer[x] = [listRecived[2], listRecived[3] ];
-    attPage2([AlarmeGraus,AlarmeTimer]);
-  }
   print(listRecived[0]);
 
-}
-
-TestPrint() async {
-  print(AlarmeGraus);
-  print(AlarmeTimer);
 }
 
 mandaMensagem(String msg) async {
@@ -184,19 +159,4 @@ List getTemps() {
 
 bool reciverBluOk(){
   return notiflyOk;
-}
-
-List<List> getAlarm() {
-  return [AlarmeGraus,AlarmeTimer];
-}
-
-void apagaAlarm(String name, int indice){
-  if (name == "timer"){
-    AlarmeTimer = [0,0,0,0,0, 0,0,0,0,0]; //Reinicia lista para receber os valores que ficaram
-  } else{ AlarmeGraus = [0,0,0,0,0, 0,0,0,0,0];}
-  print(AlarmeTimer);
-  mandaMensagem("DelAlarme,$name,$indice");
-  attPage2([AlarmeGraus,AlarmeTimer]);
-  mandaMensagem("Alarme");  // Solicita os valores
-  
 }
