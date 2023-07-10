@@ -6,6 +6,8 @@ import 'pages/page3.dart';
 import 'src/shared/themes/themes.dart';
 import 'widgets/bottomNavigationBar_Widget.dart';
 
+import 'pages/aws_Controler.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -19,6 +21,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   ThemeMode themeMode = ThemeMode.system;
+  var teste = aws();
 
   void changeThemeMode() {
     setState(() {

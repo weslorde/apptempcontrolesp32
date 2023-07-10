@@ -41,6 +41,7 @@ dependencies:
   numberpicker: ^2.1.2
 
   flutter_local_notifications: ^15.0.1
+  mqtt_client: ^10.0.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -74,6 +75,10 @@ flutter:
       - lib/assets/images/TargetCircular.png
       - lib/assets/images/TargetIcon.png
       - lib/assets/icons/Icon.png
+      - lib/assets/awsCert/rootCA.pem
+      - lib/assets/awsCert/device.pem.crt
+      - lib/assets/awsCert/private.pem.key
+      
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
