@@ -8,6 +8,7 @@ import 'dart:math' as math;
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 import 'all_Widget.dart';
+import 'notificationAlarm.dart';
 import 'p1_Widget.dart';
 
 class Page1 extends StatefulWidget {
@@ -39,8 +40,8 @@ class _Page1State extends State<Page1> {
     attTemperatures();
     periodTimer = const Duration(seconds: 2);
     rotine2Seg = Timer.periodic(periodTimer, (arg) {
-      blueCheck();
-      attTemperatures();
+      //blueCheck();
+      //attTemperatures();
     });
 
     attCalculaValores();
@@ -112,7 +113,7 @@ class _Page1State extends State<Page1> {
     });
   }
 
-  void _opentransactionFormModal() {
+  void _openTemAlvoFormModal() {
     showModalBottomSheet(
         context: context,
         builder: (_) {
@@ -122,6 +123,25 @@ class _Page1State extends State<Page1> {
 
   void onTargetTempFormSubmit(int value){
     mandaMensagem("Target,$value");
+    Navigator.of(context).pop();
+  }
+
+  void _openAlarmsFormModal() {
+    showModalBottomSheet(
+        context: context,
+        builder: (_) {
+          return alarmForm(onTempoSubmit: onAlarmsTempoFormSubmit, onGrausSubmit: onAlarmsGrausFormSubmit,);
+        });
+  }
+
+  void onAlarmsTempoFormSubmit(Duration value){
+    mandaMensagem("TimerAlarme,${value.inHours},${value.inMinutes}");
+    Navigator.of(context).pop();
+  }
+
+  void onAlarmsGrausFormSubmit(String sensor, int value){
+    mandaMensagem("GrausAlarme,$sensor,$value");
+    print("$sensor, $value");
     Navigator.of(context).pop();
   }
 
@@ -288,7 +308,10 @@ class _Page1State extends State<Page1> {
                         ),
 
                         //Botoes abaixo Temp e Timer
-                        AlarmCreatButtons(opentransactionFormModal: _opentransactionFormModal)
+                        AlarmCreatButtons(openTemAlvoFormModal: _openTemAlvoFormModal, openAlarmsFormModal: _openAlarmsFormModal),
+                        //TestNotificacao
+                        //SizedBox(height: 50,),
+                        //TextButton(onPressed: () {NotificationService().showNotification(CustomNotification(id: 1, title: 'Tudo Corno', body: 'Obrigado corno! S2', payload: 'payloadteste'));}, child: Text("testNotificacao"))
                       ],
                     ),
                   ),

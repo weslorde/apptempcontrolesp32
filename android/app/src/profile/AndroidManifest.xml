@@ -12,4 +12,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" 
                      tools:remove="android:usesPermissionFlags"
                      tools:targetApi="s" />
+
+     <uses-permission android:name="android.permission.VIBRATE" />
+     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 </manifest>

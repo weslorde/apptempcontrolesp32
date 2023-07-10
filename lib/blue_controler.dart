@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:apptempcontrolesp32/pages/notificationAlarm.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -25,8 +26,8 @@ void recivePage2Att(void Function(List) fun){
 }
 
 Future<List<bool>> status() async {
-  Permission.location.request();
-  Permission.bluetooth.request();
+  //await Permission.location.request();
+  //await Permission.bluetooth.request();
   return [await FlutterBluePlus.instance.isOn, await location.serviceEnabled()];
 }
 
@@ -161,7 +162,27 @@ blueNotify(msgRecebida) {
     AlarmeTimer[x] = [listRecived[2], listRecived[3] ];
     attPage2([AlarmeGraus,AlarmeTimer]);
   }
-  print(listRecived[0]);
+  else if (comando == "NotT"){
+    if (listRecived[1] == "0"){
+      NotificationService().showNotification(CustomNotification(id: 1, title: 'Alarme', body: 'Alarme de ${listRecived[2]} minutos concluído', payload: 'GoAlarmes'));
+    }
+    else if(listRecived[1] == "1"){
+      NotificationService().showNotification(CustomNotification(id: 1, title: 'Alarme', body: 'Alarme de ${listRecived[1]} hora e ${listRecived[2]} minutos concluído', payload: 'GoAlarmes'));
+    }
+    else{NotificationService().showNotification(CustomNotification(id: 1, title: 'Alarme', body: 'Alarme de ${listRecived[1]} horas e ${listRecived[2]} minutos concluído', payload: 'GoAlarmes'));}
+  }
+  else if (comando == "NotG"){
+    if(listRecived[1] == "Grelha"){
+      NotificationService().showNotification(CustomNotification(id: 1, title: 'Temperatura da ${listRecived[1]}', body: 'Temperatura da ${listRecived[1]} alcançou ${listRecived[2]} graus', payload: 'GoAlarmes'));
+    }
+    else if (listRecived[1] == "Sensor1"){
+      NotificationService().showNotification(CustomNotification(id: 1, title: 'Temperatura do Sensor 1', body: 'Temperatura do Sensor 1 alcançou ${listRecived[2]} graus', payload: 'GoAlarmes'));
+      }
+    else if (listRecived[1] == "Sensor2"){
+      NotificationService().showNotification(CustomNotification(id: 1, title: 'Temperatura do Sensor 2', body: 'Temperatura do Sensor 2 alcançou ${listRecived[2]} graus', payload: 'GoAlarmes'));
+      }
+  }
+
 
 }
 
