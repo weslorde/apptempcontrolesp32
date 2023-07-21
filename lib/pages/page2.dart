@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:apptempcontrolesp32/blue_controler.dart';
 
 import 'all_Widget.dart';
+import 'aws_Controler.dart';
 import 'p2_Widget.dart';
 
 class Page2 extends StatefulWidget {
@@ -20,14 +21,21 @@ class _Page2State extends State<Page2> {
     setState(() {
       alarmeGraus = list[0];
       alarmeTimer = list[1];
+      print("chegou");
       print(alarmeTimer);
+      print(alarmeGraus);
     });
   }
 
   @override
   void initState() {
-    mandaMensagem("Alarme");
+    if(isConnectBlueDevice()){
+      mandaMensagem("Alarme");
+    }else{
+      awsMsg("\$aws/things/ChurrasTech2406/shadow/name/AlarmShadow/update", '{"state":{"desired": {"Enviar": "1"}}}');
+    }
     recivePage2Att(reciveAlarmBluetoPag2);
+    awsRecivePage2Att(reciveAlarmBluetoPag2);
   }
 
   

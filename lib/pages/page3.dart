@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../blue_controler.dart';
+import 'aws_Controler.dart';
 
 class Page3 extends StatefulWidget {
   const Page3({super.key});
@@ -38,10 +39,18 @@ class _Page3State extends State<Page3> {
             children: [
               Listener(
                 onPointerDown: (PointerEvent ignore) {
-                  mandaMensagem("Motor,Up,Press");
+                  if (isConnectBlueDevice()) {
+                    mandaMensagem("Motor,Up,Press");
+                  } else {
+                    awsMotor("Motor,Up,Press");
+                  }
                 },
                 onPointerUp: (PointerEvent ignore) {
-                  mandaMensagem("Motor,Up,Release");
+                  if (isConnectBlueDevice()) {
+                    mandaMensagem("Motor,Up,Release");
+                  } else {
+                    awsMotor("Motor,Up,Release");
+                  }
                 },
                 child: IconButton(
                     onPressed: () {},
@@ -53,10 +62,18 @@ class _Page3State extends State<Page3> {
               SizedBox(height: 50),
               Listener(
                 onPointerDown: (PointerEvent ignore) {
-                  mandaMensagem("Motor,Down,Press");
+                  if (isConnectBlueDevice()) {
+                    mandaMensagem("Motor,Down,Press");
+                  } else {
+                    awsMotor("Motor,Down,Press");
+                  }
                 },
                 onPointerUp: (PointerEvent ignore) {
-                  mandaMensagem("Motor,Down,Release");
+                  if (isConnectBlueDevice()) {
+                    mandaMensagem("Motor,Down,Release");
+                  } else {
+                    awsMotor("Motor,Down,Release");
+                  }
                 },
                 child: IconButton(
                     onPressed: () {},
