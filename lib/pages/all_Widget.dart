@@ -25,11 +25,12 @@ class _AlarmCreatButtonsState extends State<AlarmCreatButtons> {
           child: ElevatedButton(
             onPressed: widget.openTemAlvoFormModal,
             child: Text(
-              "Temperatura",
+              "Temperatura Alvo",
               style: TextStyle(
                   color: darkColorScheme.background,
                   fontSize: 16,
                   fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
             ),
           ),
         ),
@@ -40,7 +41,7 @@ class _AlarmCreatButtonsState extends State<AlarmCreatButtons> {
           child: ElevatedButton(
             onPressed: widget.openAlarmsFormModal,
             child: const Text(
-              "Alarme",
+              "Criar Alarme",
               style: TextStyle(
                   //color: darkColorScheme.background,
                   fontSize: 16,
