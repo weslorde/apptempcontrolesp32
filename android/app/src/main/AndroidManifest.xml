@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.apptempcontrolesp32">
    <application
-        android:label="apptempcontrolesp32"
+        android:label="Churras Test"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

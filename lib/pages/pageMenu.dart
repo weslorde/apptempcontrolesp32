@@ -116,7 +116,7 @@ class _PageMenu extends State<PageMenu> {
                       ),
                       openWifi == true
                           ? Transform.rotate(
-                              angle: -80,
+                              angle: 3.14/2,
                               child: const Icon(
                                 Icons.arrow_forward_ios,
                               ))

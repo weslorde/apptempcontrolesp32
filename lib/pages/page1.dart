@@ -12,6 +12,7 @@ import 'all_Widget.dart';
 import 'aws_Controler.dart';
 import 'notificationAlarm.dart';
 import 'p1_Widget.dart';
+import 'pageMenu.dart';
 
 class Page1 extends StatefulWidget {
   const Page1({super.key});
@@ -191,7 +192,10 @@ class _Page1State extends State<Page1> {
         actions: [
           IconButton(
             onPressed: () {
-              TestPrint();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PageMenu()),
+              );
             }, //TODO Menu icon superior direito
             icon: const Icon(
               Icons.menu,
