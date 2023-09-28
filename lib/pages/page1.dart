@@ -7,9 +7,12 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
+import '../logic/valor_Controler.dart';
 import 'all_Widget.dart';
+import 'aws_Controler.dart';
 import 'notificationAlarm.dart';
 import 'p1_Widget.dart';
+import 'pageMenu.dart';
 
 class Page1 extends StatefulWidget {
   const Page1({super.key});
@@ -19,6 +22,7 @@ class Page1 extends StatefulWidget {
 }
 
 class _Page1State extends State<Page1> {
+  int blueTentativas = 0;
   int temp = 300;
   int tempSensor1 = 200;
   int tempSensor2 = 200;
@@ -37,16 +41,22 @@ class _Page1State extends State<Page1> {
   void initState() {
     print("INIT pag1");
     blueCheck();
+    print("passou?");
     attTemperatures();
-    periodTimer = const Duration(seconds: 2);
+    print("passou?2");
+    periodTimer = const Duration(seconds: 4);
     rotine2Seg = Timer.periodic(periodTimer, (arg) {
-      //blueCheck();
-      //attTemperatures();
+      if (blueTentativas <= 3) {
+        print(blueTentativas);
+        blueCheck();
+      }
+      attTemperatures();
     });
-
+    print("criou");
     attCalculaValores();
     blueCheck();
     super.initState();
+    print("fim");
   }
 
   @override
@@ -76,15 +86,34 @@ class _Page1State extends State<Page1> {
   void attTemperatures() {
     if (isConnectBlueDevice() & reciverBluOk()) {
       mandaMensagem("Ping");
+
+      setState(() {
+        List listTemps = getTemps();
+        temp = int.parse(listTemps[0]);
+        tempSensor1 = int.parse(listTemps[1]);
+        tempSensor2 = int.parse(listTemps[2]);
+        target = int.parse(listTemps[3]);
+        attCalculaValores();
+      });
+    } else {
+      try {
+        awsMsg(
+            '\$aws/things/ChurrasTech2406/shadow/name/TemperaturesShadow/update',
+            '{"state": {"desired": {"Enviar": "1"}}}');
+      } catch (e) {
+        print('erro');
+      }
+      
+      setState(() {
+        List listTemps = getTemp();
+        temp = int.parse(listTemps[0]);
+        tempSensor1 = int.parse(listTemps[1]);
+        tempSensor2 = int.parse(listTemps[2]);
+        target = int.parse(listTemps[3]);
+        attCalculaValores();
+      });
+      print("awsMSG");
     }
-    setState(() {
-      List listTemps = getTemps();
-      temp = int.parse(listTemps[0]);
-      tempSensor1 = int.parse(listTemps[1]);
-      tempSensor2 = int.parse(listTemps[2]);
-      target = int.parse(listTemps[3]);
-      attCalculaValores();
-    });
   }
 
   void blueCheck() async {
@@ -100,6 +129,7 @@ class _Page1State extends State<Page1> {
         if (BlueState & LocatState & !inConectBlue) {
           inConectBlue = true;
           blueScan(inConBlueChange);
+          blueTentativas += 1;
         }
       }
     } on Exception {
@@ -117,12 +147,17 @@ class _Page1State extends State<Page1> {
     showModalBottomSheet(
         context: context,
         builder: (_) {
-          return targetTempForm(onSubmit: onTargetTempFormSubmit);
+          return tAlvoForm(onTAlvoSubmit: onTargetTempFormSubmit);
         });
   }
 
-  void onTargetTempFormSubmit(int value){
-    mandaMensagem("Target,$value");
+  void onTargetTempFormSubmit(int value) {
+    if (isConnectBlueDevice()) {
+      mandaMensagem("Target,$value");
+    } else {
+      awsMsg('\$aws/things/ChurrasTech2406/shadow/name/TemperaturesShadow/update', '{"state": {"desired": {"TAlvoFlutter": "$value"}}}');
+      print("awsMSG2");
+    }
     Navigator.of(context).pop();
   }
 
@@ -130,16 +165,19 @@ class _Page1State extends State<Page1> {
     showModalBottomSheet(
         context: context,
         builder: (_) {
-          return alarmForm(onTempoSubmit: onAlarmsTempoFormSubmit, onGrausSubmit: onAlarmsGrausFormSubmit,);
+          return alarmForm(
+            onTempoSubmit: onAlarmsTempoFormSubmit,
+            onGrausSubmit: onAlarmsGrausFormSubmit,
+          );
         });
   }
 
-  void onAlarmsTempoFormSubmit(Duration value){
+  void onAlarmsTempoFormSubmit(Duration value) {
     mandaMensagem("TimerAlarme,${value.inHours},${value.inMinutes}");
     Navigator.of(context).pop();
   }
 
-  void onAlarmsGrausFormSubmit(String sensor, int value){
+  void onAlarmsGrausFormSubmit(String sensor, int value) {
     mandaMensagem("GrausAlarme,$sensor,$value");
     print("$sensor, $value");
     Navigator.of(context).pop();
@@ -160,7 +198,10 @@ class _Page1State extends State<Page1> {
         actions: [
           IconButton(
             onPressed: () {
-              TestPrint();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PageMenu()),
+              );
             }, //TODO Menu icon superior direito
             icon: const Icon(
               Icons.menu,
@@ -308,7 +349,9 @@ class _Page1State extends State<Page1> {
                         ),
 
                         //Botoes abaixo Temp e Timer
-                        AlarmCreatButtons(openTemAlvoFormModal: _openTemAlvoFormModal, openAlarmsFormModal: _openAlarmsFormModal),
+                        AlarmCreatButtons(
+                            openTemAlvoFormModal: _openTemAlvoFormModal,
+                            openAlarmsFormModal: _openAlarmsFormModal),
                         //TestNotificacao
                         //SizedBox(height: 50,),
                         //TextButton(onPressed: () {NotificationService().showNotification(CustomNotification(id: 1, title: 'Tudo Corno', body: 'Obrigado corno! S2', payload: 'payloadteste'));}, child: Text("testNotificacao"))

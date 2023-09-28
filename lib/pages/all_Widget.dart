@@ -25,11 +25,12 @@ class _AlarmCreatButtonsState extends State<AlarmCreatButtons> {
           child: ElevatedButton(
             onPressed: widget.openTemAlvoFormModal,
             child: Text(
-              "Temperatura",
+              "Temperatura Alvo",
               style: TextStyle(
                   color: darkColorScheme.background,
                   fontSize: 16,
                   fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
             ),
           ),
         ),
@@ -40,7 +41,7 @@ class _AlarmCreatButtonsState extends State<AlarmCreatButtons> {
           child: ElevatedButton(
             onPressed: widget.openAlarmsFormModal,
             child: const Text(
-              "Alarme",
+              "Criar Alarme",
               style: TextStyle(
                   //color: darkColorScheme.background,
                   fontSize: 16,
@@ -275,6 +276,77 @@ class _alarmFormState extends State<alarmForm> {
                           }
                         }
                         widget.onGrausSubmit(_sensorTemp, _temperaturaValue);
+                      },
+                      child: const Text(
+                        "Salvar",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    )
+                  ],
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class tAlvoForm extends StatefulWidget {
+  const tAlvoForm(
+      {super.key, required this.onTAlvoSubmit});
+
+  final void Function(int) onTAlvoSubmit;
+
+  @override
+  State<tAlvoForm> createState() => _tAlvoFormState();
+}
+
+class _tAlvoFormState extends State<tAlvoForm> {
+  final targetValueController = TextEditingController();
+  double myHeight = 350;
+  String alarm = "none";
+
+  void changeHeigth(double value) {
+    setState(() {
+      myHeight = value;
+    });
+  }
+
+  int _temperaturaValue = 100;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 5,
+      child: Container(
+        height: myHeight,
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Column(
+            children: [
+              SizedBox(height: 10),
+              Text(
+                "Definir temperatura alvo",
+                style: TextStyle(fontSize: 20),
+              ),
+              SizedBox(height: 10),
+                Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    NumberPicker(
+                      value: _temperaturaValue,
+                      minValue: 20,
+                      maxValue: 400,
+                      step: 5,
+                      onChanged: (value) =>
+                          setState(() => _temperaturaValue = value),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        widget.onTAlvoSubmit(_temperaturaValue);
                       },
                       child: const Text(
                         "Salvar",

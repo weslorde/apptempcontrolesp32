@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:apptempcontrolesp32/pages/notificationAlarm.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:location/location.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 var location = Location();
 bool? blueState;
