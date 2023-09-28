@@ -35,6 +35,7 @@ class _Page2State extends State<Page2> {
     } else {
       awsMsg("\$aws/things/ChurrasTech2406/shadow/name/AlarmShadow/update",
           '{"state":{"desired": {"Enviar": "1"}}}');
+      print("AWSpag2");
     }
     recivePage2Att(reciveAlarmBluetoPag2);
     awsRecivePage2Att(reciveAlarmBluetoPag2);

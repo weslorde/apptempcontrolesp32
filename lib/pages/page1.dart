@@ -41,18 +41,22 @@ class _Page1State extends State<Page1> {
   void initState() {
     print("INIT pag1");
     blueCheck();
+    print("passou?");
     attTemperatures();
-    periodTimer = const Duration(seconds: 5);
+    print("passou?2");
+    periodTimer = const Duration(seconds: 4);
     rotine2Seg = Timer.periodic(periodTimer, (arg) {
       if (blueTentativas <= 3) {
+        print(blueTentativas);
         blueCheck();
       }
       attTemperatures();
     });
-
+    print("criou");
     attCalculaValores();
     blueCheck();
     super.initState();
+    print("fim");
   }
 
   @override
@@ -99,7 +103,7 @@ class _Page1State extends State<Page1> {
       } catch (e) {
         print('erro');
       }
-
+      
       setState(() {
         List listTemps = getTemp();
         temp = int.parse(listTemps[0]);
@@ -108,6 +112,7 @@ class _Page1State extends State<Page1> {
         target = int.parse(listTemps[3]);
         attCalculaValores();
       });
+      print("awsMSG");
     }
   }
 
@@ -151,6 +156,7 @@ class _Page1State extends State<Page1> {
       mandaMensagem("Target,$value");
     } else {
       awsMsg('\$aws/things/ChurrasTech2406/shadow/name/TemperaturesShadow/update', '{"state": {"desired": {"TAlvoFlutter": "$value"}}}');
+      print("awsMSG2");
     }
     Navigator.of(context).pop();
   }
