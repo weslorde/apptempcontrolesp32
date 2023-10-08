@@ -1,6 +1,6 @@
-import 'package:apptempcontrolesp32/src/shared/themes/color_schemes.g.dart';
+import '../../lib2/src/shared/themes/color_schemes.g.dart';
 import 'package:flutter/material.dart';
-import 'package:apptempcontrolesp32/blue_controler.dart';
+import '../../lib2/blue_controler.dart';
 
 import 'all_Widget.dart';
 import 'aws_Controler.dart';

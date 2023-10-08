@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:apptempcontrolesp32/src/shared/themes/color_schemes.g.dart';
+import '../../lib2/src/shared/themes/color_schemes.g.dart';
 
 class ListAlarm extends StatefulWidget {
   //const ListAlarm({super.key, this.temp = 0, required this.name});

@@ -1,6 +1,6 @@
 import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:apptempcontrolesp32/src/shared/themes/color_schemes.g.dart';
+import '../../lib2/src/shared/themes/color_schemes.g.dart';
 import 'package:numberpicker/numberpicker.dart';
 
 class AlarmCreatButtons extends StatefulWidget {

@@ -1,4 +1,4 @@
-import 'package:apptempcontrolesp32/src/shared/themes/color_schemes.g.dart';
+import '../../lib2/src/shared/themes/color_schemes.g.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -25,11 +25,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Widget build(BuildContext context) {
     final List<Widget> destinations = [
       NavigationDestination(
-          icon: Icon(Icons.fireplace_outlined, color: IconColorChange(0)),
-          label: "Faier"),
+          icon: Icon(Icons.data_usage, color: IconColorChange(0)),
+          label: "Monitorar"),
       NavigationDestination(
-          icon: Icon(Icons.water_drop_outlined, color: IconColorChange(1)), label: "Water"),
-      NavigationDestination(icon: Icon(Icons.group_add, color: IconColorChange(2)), label: "Team"),
+          icon: Icon(Icons.alarm_on, color: IconColorChange(1)), label: "Alarmes"),
+      NavigationDestination(icon: Icon(Icons.format_line_spacing, color: IconColorChange(2)), label: "Controle"),
     ];
 
     return NavigationBar(

@@ -1,13 +1,18 @@
 import 'dart:async';
 
-import 'package:apptempcontrolesp32/blue_controler.dart';
-import 'package:apptempcontrolesp32/src/shared/themes/color_schemes.g.dart';
+import '../../lib2/blue_controler.dart';
+import '../../lib2/src/shared/themes/color_schemes.g.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:math' as math;
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
+import '../logic/valor_Controler.dart';
+import 'all_Widget.dart';
+import 'aws_Controler.dart';
+import 'notificationAlarm.dart';
 import 'p1_Widget.dart';
+import 'pageMenu.dart';
 
 class Page1 extends StatefulWidget {
   const Page1({super.key});
@@ -17,15 +22,7 @@ class Page1 extends StatefulWidget {
 }
 
 class _Page1State extends State<Page1> {
-  Color ColorCircularProgress(int t) {
-    if (currentStep > t) {
-      return (Color.lerp(Colors.amber, Colors.red, t.toDouble() / totalSteps)!);
-    } else {
-      return (Color.lerp(Colors.amber.withAlpha(70), Colors.red.withAlpha(70),
-          t.toDouble() / totalSteps)!);
-    }
-  }
-
+  int blueTentativas = 0;
   int temp = 300;
   int tempSensor1 = 200;
   int tempSensor2 = 200;
@@ -44,22 +41,37 @@ class _Page1State extends State<Page1> {
   void initState() {
     print("INIT pag1");
     blueCheck();
+    print("passou?");
     attTemperatures();
-    periodTimer = const Duration(seconds: 2);
+    print("passou?2");
+    periodTimer = const Duration(seconds: 4);
     rotine2Seg = Timer.periodic(periodTimer, (arg) {
-      blueCheck();
+      if (blueTentativas <= 3) {
+        print(blueTentativas);
+        blueCheck();
+      }
       attTemperatures();
     });
-
+    print("criou");
     attCalculaValores();
     blueCheck();
     super.initState();
+    print("fim");
   }
 
   @override
   void dispose() {
     rotine2Seg.cancel();
     super.dispose();
+  }
+
+  Color ColorCircularProgress(int t) {
+    if (currentStep > t) {
+      return (Color.lerp(Colors.amber, Colors.red, t.toDouble() / totalSteps)!);
+    } else {
+      return (Color.lerp(Colors.amber.withAlpha(70), Colors.red.withAlpha(70),
+          t.toDouble() / totalSteps)!);
+    }
   }
 
   void attCalculaValores() {
@@ -74,20 +86,40 @@ class _Page1State extends State<Page1> {
   void attTemperatures() {
     if (isConnectBlueDevice() & reciverBluOk()) {
       mandaMensagem("Ping");
+
+      setState(() {
+        List listTemps = getTemps();
+        temp = int.parse(listTemps[0]);
+        tempSensor1 = int.parse(listTemps[1]);
+        tempSensor2 = int.parse(listTemps[2]);
+        target = int.parse(listTemps[3]);
+        attCalculaValores();
+      });
+    } else {
+      try {
+        awsMsg(
+            '\$aws/things/ChurrasTech2406/shadow/name/TemperaturesShadow/update',
+            '{"state": {"desired": {"Enviar": "1"}}}');
+      } catch (e) {
+        print('erro');
+      }
+      
+      setState(() {
+        List listTemps = getTemp();
+        temp = int.parse(listTemps[0]);
+        tempSensor1 = int.parse(listTemps[1]);
+        tempSensor2 = int.parse(listTemps[2]);
+        target = int.parse(listTemps[3]);
+        attCalculaValores();
+      });
+      print("awsMSG");
     }
-    setState(() {
-      List listTemps = getTemps();
-      temp = int.parse(listTemps[0]);
-      tempSensor1 = int.parse(listTemps[1]);
-      tempSensor2 = int.parse(listTemps[2]);
-      target = int.parse(listTemps[3]);
-      attCalculaValores();
-    });
   }
 
   void blueCheck() async {
     print("teste");
     var _ListLogic = await status();
+    print(_ListLogic);
     try {
       setState(() {
         BlueState = _ListLogic[0];
@@ -96,7 +128,8 @@ class _Page1State extends State<Page1> {
       if (!isConnectBlueDevice()) {
         if (BlueState & LocatState & !inConectBlue) {
           inConectBlue = true;
-          blueScan(inConBlueChange);
+          //blueScan(inConBlueChange);
+          blueTentativas += 1;
         }
       }
     } on Exception {
@@ -110,13 +143,53 @@ class _Page1State extends State<Page1> {
     });
   }
 
+  void _openTemAlvoFormModal() {
+    showModalBottomSheet(
+        context: context,
+        builder: (_) {
+          return tAlvoForm(onTAlvoSubmit: onTargetTempFormSubmit);
+        });
+  }
+
+  void onTargetTempFormSubmit(int value) {
+    if (isConnectBlueDevice()) {
+      mandaMensagem("Target,$value");
+    } else {
+      awsMsg('\$aws/things/ChurrasTech2406/shadow/name/TemperaturesShadow/update', '{"state": {"desired": {"TAlvoFlutter": "$value"}}}');
+      print("awsMSG2");
+    }
+    Navigator.of(context).pop();
+  }
+
+  void _openAlarmsFormModal() {
+    showModalBottomSheet(
+        context: context,
+        builder: (_) {
+          return alarmForm(
+            onTempoSubmit: onAlarmsTempoFormSubmit,
+            onGrausSubmit: onAlarmsGrausFormSubmit,
+          );
+        });
+  }
+
+  void onAlarmsTempoFormSubmit(Duration value) {
+    mandaMensagem("TimerAlarme,${value.inHours},${value.inMinutes}");
+    Navigator.of(context).pop();
+  }
+
+  void onAlarmsGrausFormSubmit(String sensor, int value) {
+    mandaMensagem("GrausAlarme,$sensor,$value");
+    print("$sensor, $value");
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // Menu superior
       appBar: AppBar(
         leading: IconButton(
-          onPressed: ()  { }, //TODO Perfil icon superior esquedo
+          onPressed: () {}, //TODO Perfil icon superior esquedo
           icon: const Icon(
             Icons.account_circle_rounded,
             size: 30,
@@ -124,7 +197,12 @@ class _Page1State extends State<Page1> {
         ),
         actions: [
           IconButton(
-            onPressed: () {}, //TODO Menu icon superior direito
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PageMenu()),
+              );
+            }, //TODO Menu icon superior direito
             icon: const Icon(
               Icons.menu,
               size: 30,
@@ -271,38 +349,12 @@ class _Page1State extends State<Page1> {
                         ),
 
                         //Botoes abaixo Temp e Timer
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                child: Text(
-                                  "Temperatura",
-                                  style: TextStyle(
-                                      color: darkColorScheme.background,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                child: Text(
-                                  "Timer",
-                                  style: TextStyle(
-                                      //color: darkColorScheme.background,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
+                        AlarmCreatButtons(
+                            openTemAlvoFormModal: _openTemAlvoFormModal,
+                            openAlarmsFormModal: _openAlarmsFormModal),
+                        //TestNotificacao
+                        //SizedBox(height: 50,),
+                        //TextButton(onPressed: () {NotificationService().showNotification(CustomNotification(id: 1, title: 'Tudo Corno', body: 'Obrigado corno! S2', payload: 'payloadteste'));}, child: Text("testNotificacao"))
                       ],
                     ),
                   ),
